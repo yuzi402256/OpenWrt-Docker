@@ -91,6 +91,7 @@ ifconfig
 打开网卡混合模式
 sudo ip link set 文字这里填你自己的网卡名称 promisc on
 ##以下是我的网卡名称，每台设备可能不一样，要注意！！！！
+
 #打开网卡混杂模式
 sudo  ip link set eth0 promisc on
 
@@ -98,6 +99,7 @@ sudo  ip link set eth0 promisc on
 下边这行里面的一些参数也要替换
 
 按自己的修改后
+
 docker network create -d macvlan --subnet=192.168.0.0/24 --gateway=192.168.0.1 -o parent=eth0 macnet
 
 
@@ -116,27 +118,45 @@ OpenWrt 标准镜像为集成常用软件包的 Docker 镜像，镜像自带软�
 
 支持设备/平台	openwrt镜像
 树莓派 1B	registry.cn-shanghai.aliyuncs.com/suling/openwrt:rpi1
+
 树莓派 2B	registry.cn-shanghai.aliyuncs.com/suling/openwrt:rpi2
+
 树莓派 3B / 3B+	registry.cn-shanghai.aliyuncs.com/suling/openwrt:rpi3
+
 树莓派 4B	registry.cn-shanghai.aliyuncs.com/suling/openwrt:rpi4
+
 armv7	registry.cn-shanghai.aliyuncs.com/suling/openwrt:armv7
+
 arm8/aarch64	registry.cn-shanghai.aliyuncs.com/suling/openwrt:armv8
+
 x86_64/amd64	registry.cn-shanghai.aliyuncs.com/suling/openwrt:x86_64
+
+
+
+
+
 查看自己的系统架构
 
-uname -a
 
+uname -a
 
 
 创建并启动docker 镜像
 
 ![1718210516756](https://github.com/yuzi402256/OpenWrt-Docker/assets/167555481/d17eec00-6444-4b01-9386-8d4a7d812447)
+
 arm8/arrch64
+
+
 可以先拉取镜像 docker pull registry.cn-shanghai.aliyuncs.com/suling/openwrt:armv8
+
+
 
 docker run --restart always --name openwrt -d --network macnet --privileged sulinggg/openwrt:armv8 /sbin/init
 
+
 如果是x86的
+
 ![image](https://github.com/yuzi402256/OpenWrt-Docker/assets/167555481/5c7d5295-9619-4d7d-8ba2-9f8a1a97b61e)
 
 x86_64/amd64
