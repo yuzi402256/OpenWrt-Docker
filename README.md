@@ -80,31 +80,36 @@ modprobe xt_TPROXY
 在您的liunx机子上输入查看ip 的命令 ifconfig 或 ip addr 两个命令其中的一个即可！
 
 ip addr
-1
+
 或者
 
 ifconfig
-1
-在这里插入图片描述
+
+![image](https://github.com/yuzi402256/OpenWrt-Docker/assets/167555481/b3bc38c6-5eb7-48d0-aa08-493dbbb3b625)
+
 
 打开网卡混合模式
 sudo ip link set 文字这里填你自己的网卡名称 promisc on
 ##以下是我的网卡名称，每台设备可能不一样，要注意！！！！
-sudo ip link set enp1s0 promisc on
-1
-2
-3
+#打开网卡混杂模式
+sudo  ip link set eth0 promisc on
+
 创建 docker 网卡
 下边这行里面的一些参数也要替换
 
-docker network create -d macvlan --subnet=192.168.2.0/24 --gateway=192.168.2.1 -o parent=enp1s0 macnet
-1
+按自己的修改后
+docker network create -d macvlan --subnet=192.168.0.0/24 --gateway=192.168.0.1 -o parent=eth0 macnet
+
+
 图片里面有说明大家仔细看看
-在这里插入图片描述
+
+![image](https://github.com/yuzi402256/OpenWrt-Docker/assets/167555481/450f0150-e340-46ee-8b2a-bc65cc480bb4)
+
 macvlan 模式会为每个容器创建一个独立的 ip 每个容器可以通过独立的 ip 进行访问
 
 修改完成后粘贴到liunx里出现类似于图片里的这种就是成功了
-在这里插入图片描述
+![image](https://github.com/yuzi402256/OpenWrt-Docker/assets/167555481/0d8bca09-9e04-42f3-a08d-18e831025943)
+
 
 OpenWrt 标准镜像
 OpenWrt 标准镜像为集成常用软件包的 Docker 镜像，镜像自带软件包可满足大多数情景下的使用需求
@@ -120,37 +125,50 @@ x86_64/amd64	registry.cn-shanghai.aliyuncs.com/suling/openwrt:x86_64
 查看自己的系统架构
 
 uname -a
-1
-在这里插入图片描述
+
+
 
 创建并启动docker 镜像
+
+![1718210516756](https://github.com/yuzi402256/OpenWrt-Docker/assets/167555481/d17eec00-6444-4b01-9386-8d4a7d812447)
 arm8/arrch64
+可以先拉取镜像 docker pull registry.cn-shanghai.aliyuncs.com/suling/openwrt:armv8
 
 docker run --restart always --name openwrt -d --network macnet --privileged sulinggg/openwrt:armv8 /sbin/init
-1
-x86_64/amd64
 
+如果是x86的
+![image](https://github.com/yuzi402256/OpenWrt-Docker/assets/167555481/5c7d5295-9619-4d7d-8ba2-9f8a1a97b61e)
+
+x86_64/amd64
 docker run --restart always --name openwrt -d --network macnet --privileged sulinggg/openwrt:x86_64 /sbin/init
-1
-在这里插入图片描述
+
+
+![image](https://github.com/yuzi402256/OpenWrt-Docker/assets/167555481/7dbbccb6-7a60-4ba6-99ff-999cc7dab90c)
+
 
 修改openwrt的ip
 先进入openwrt容器内
 运行执行命令
 
 docker exec -it openwrt bash 
-1
-在这里插入图片描述
+
+![image](https://github.com/yuzi402256/OpenWrt-Docker/assets/167555481/672915fd-57b2-443d-af4a-38bee35a6d75)
+
 用vi或者vim打开容器的网络配置文件
 
 vim /etc/config/network
-1
+
+或者   nano /etc/config/network
+
+
 看图片吧，我懒得写了
 第一步：
-在这里插入图片描述
+![image](https://github.com/yuzi402256/OpenWrt-Docker/assets/167555481/bbe9e0e6-e7fb-4861-8ff0-e51865c28f0b)
+
 完成前置步骤后就可以进入编辑阶段了，看如下图
 
-在这里插入图片描述
+![image](https://github.com/yuzi402256/OpenWrt-Docker/assets/167555481/bfb48177-b02e-4b34-b79c-f5b5838c6f70)
+
 编辑修改完记得保存退出，不懂怎么操作看1图！！！！！！
 
 **
@@ -161,11 +179,10 @@ vim /etc/config/network
 
 /etc/init.d/network restart
 exit
-1
-2
+
 重启网络, 重启完成后便可以通过浏览器访问了
 以下是我openwrt的打开地址，你填写你自己的即可
-http://192.168.50.123
+http://192.168.0.10
 默认密码是 password
 
 设置 openwrt
@@ -175,9 +192,11 @@ Turbo ACC 网络加速设置
 114.114.114.114,114.114.115.115,223.5.5.5,223.6.6.6,180.76.76.76,119.29.29.29,119.28.28.28,1.2.4.8,210.2.4.8,8.8.8.8,8.8.4.4,1.1.1.1
 1
 粘贴地址看图片
-在这里插入图片描述
+![image](https://github.com/yuzi402256/OpenWrt-Docker/assets/167555481/7f53fcf6-8d55-4209-8ed5-6ca565fc2b94)
+
 
 设置地址看图片
-在这里插入图片描述
+![image](https://github.com/yuzi402256/OpenWrt-Docker/assets/167555481/d4e26d50-da47-4240-a759-432aca365926)
+
 
 完成以上步骤，就恭喜您，完成了docker版旁路由的设置
