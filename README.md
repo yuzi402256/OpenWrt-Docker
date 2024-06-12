@@ -198,7 +198,9 @@ vim /etc/config/network
 重启openwrt容器网卡！！！
 
 /etc/init.d/network restart
+
 exit
+
 
 重启网络, 重启完成后便可以通过浏览器访问了
 以下是我openwrt的打开地址，你填写你自己的即可
