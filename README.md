@@ -69,20 +69,115 @@ modprobe xt_TPROXY
 
 <https://mlapp.cn/376.html>
 
-## 鸣谢
+## 相关教程
+通过SSH登录到你的Linux设备
 
-P3TERX/Actions-OpenWrt (本项目基于此项目):
+**
 
-<https://github.com/P3TERX/Actions-OpenWrt>
+把网卡混杂模式打开
+**
+根据您当前的ip查看网卡！！！
+在您的liunx机子上输入查看ip 的命令 ifconfig 或 ip addr 两个命令其中的一个即可！
 
-OpenWrt Source Repository:
+ip addr
+1
+或者
 
-<https://github.com/openwrt/openwrt/>
+ifconfig
+1
+在这里插入图片描述
 
-Lean's OpenWrt source:
+打开网卡混合模式
+sudo ip link set 文字这里填你自己的网卡名称 promisc on
+##以下是我的网卡名称，每台设备可能不一样，要注意！！！！
+sudo ip link set enp1s0 promisc on
+1
+2
+3
+创建 docker 网卡
+下边这行里面的一些参数也要替换
 
-<https://github.com/coolsnowwolf/lede>
+docker network create -d macvlan --subnet=192.168.2.0/24 --gateway=192.168.2.1 -o parent=enp1s0 macnet
+1
+图片里面有说明大家仔细看看
+在这里插入图片描述
+macvlan 模式会为每个容器创建一个独立的 ip 每个容器可以通过独立的 ip 进行访问
 
-CTCGFW's Team:
+修改完成后粘贴到liunx里出现类似于图片里的这种就是成功了
+在这里插入图片描述
 
-<https://github.com/project-openwrt>
+OpenWrt 标准镜像
+OpenWrt 标准镜像为集成常用软件包的 Docker 镜像，镜像自带软件包可满足大多数情景下的使用需求
+
+支持设备/平台	openwrt镜像
+树莓派 1B	registry.cn-shanghai.aliyuncs.com/suling/openwrt:rpi1
+树莓派 2B	registry.cn-shanghai.aliyuncs.com/suling/openwrt:rpi2
+树莓派 3B / 3B+	registry.cn-shanghai.aliyuncs.com/suling/openwrt:rpi3
+树莓派 4B	registry.cn-shanghai.aliyuncs.com/suling/openwrt:rpi4
+armv7	registry.cn-shanghai.aliyuncs.com/suling/openwrt:armv7
+arm8/aarch64	registry.cn-shanghai.aliyuncs.com/suling/openwrt:armv8
+x86_64/amd64	registry.cn-shanghai.aliyuncs.com/suling/openwrt:x86_64
+查看自己的系统架构
+
+uname -a
+1
+在这里插入图片描述
+
+创建并启动docker 镜像
+arm8/arrch64
+
+docker run --restart always --name openwrt -d --network macnet --privileged sulinggg/openwrt:armv8 /sbin/init
+1
+x86_64/amd64
+
+docker run --restart always --name openwrt -d --network macnet --privileged sulinggg/openwrt:x86_64 /sbin/init
+1
+在这里插入图片描述
+
+修改openwrt的ip
+先进入openwrt容器内
+运行执行命令
+
+docker exec -it openwrt bash 
+1
+在这里插入图片描述
+用vi或者vim打开容器的网络配置文件
+
+vim /etc/config/network
+1
+看图片吧，我懒得写了
+第一步：
+在这里插入图片描述
+完成前置步骤后就可以进入编辑阶段了，看如下图
+
+在这里插入图片描述
+编辑修改完记得保存退出，不懂怎么操作看1图！！！！！！
+
+**
+
+如果你报错没法更改IP的话就可以进入下一步了
+**
+重启openwrt容器网卡！！！
+
+/etc/init.d/network restart
+exit
+1
+2
+重启网络, 重启完成后便可以通过浏览器访问了
+以下是我openwrt的打开地址，你填写你自己的即可
+http://192.168.50.123
+默认密码是 password
+
+设置 openwrt
+防火墙设置
+Turbo ACC 网络加速设置
+
+114.114.114.114,114.114.115.115,223.5.5.5,223.6.6.6,180.76.76.76,119.29.29.29,119.28.28.28,1.2.4.8,210.2.4.8,8.8.8.8,8.8.4.4,1.1.1.1
+1
+粘贴地址看图片
+在这里插入图片描述
+
+设置地址看图片
+在这里插入图片描述
+
+完成以上步骤，就恭喜您，完成了docker版旁路由的设置
